@@ -66,11 +66,24 @@
 
             <div class="upload-section" id="dropZone">
 
-                <i class="fa-solid fa-camera icon-upload"></i>
+                <i class="fa-solid fa-cloud-arrow-up icon-upload"></i>
 
-                <p>Klik untuk Pilih Foto Luka</p>
+                <p class="drop-text">Seret &amp; lepas foto di sini</p>
+                <p class="drop-sub">atau pilih metode di bawah</p>
 
-                <input type="file" id="imageInput" accept="image/*" hidden>
+                <div class="upload-options">
+                    <label for="imageInput" class="upload-btn">
+                        <i class="fa-solid fa-folder-open"></i> Pilih dari Folder
+                    </label>
+                    <button id="openCameraBtn" class="upload-btn btn-camera" type="button">
+                        <i class="fa-solid fa-camera"></i> Buka Kamera
+                    </button>
+                </div>
+
+                <!-- Input galeri / folder -->
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                <!-- Input kamera langsung (capture=environment = kamera belakang di HP) -->
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
 
             </div>
 
@@ -92,16 +105,11 @@
 
                     </label>
 
-                    <select id="bodyPartInput"
-                        style="width: 100%; padding: 0.8rem; margin-bottom: 1.5rem; border: 1px solid #ccc; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+                    <select id="bodyPartInput" class="question-select" style="margin-bottom: 1.5rem;">
 
-                        <option value="lainnya">Bagian Tubuh Lainnya (Badan, Paha, Lengan)</option>
+                        <option value="tangan">Tangan</option>
 
-                        <option value="muka">Muka / Wajah / Leher</option>
-
-                        <option value="tangan">Tangan / Telapak Tangan</option>
-
-                        <option value="kaki">Kaki / Telapak Kaki</option>
+                        <option value="kaki">Kaki</option>
 
                     </select>
 
@@ -113,8 +121,7 @@
 
                     </label>
 
-                    <select id="ageInput"
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+                    <select id="ageInput" class="question-select">
 
                         <option value="dewasa">Dewasa (Usia ≥ 15 tahun)</option>
 
@@ -136,9 +143,14 @@
 
             <div id="loader" class="loader hidden">
 
-                <div class="spinner"></div>
+                <div class="spinner-wrapper">
+                    <div class="spinner-outer"></div>
+                    <div class="spinner-inner"></div>
+                    <i class="fa-solid fa-fire spinner-icon"></i>
+                </div>
 
-                <p>Kami sedang bekerja...</p>
+                <p class="loader-text">Menganalisis gambar<span class="loader-dots"></span></p>
+                <p class="loader-sub">Model AI sedang memproses foto Anda</p>
 
             </div>
 
@@ -185,6 +197,33 @@
     </footer>
 
 
+
+    <!-- Modal Buka Kamera (Desktop & Mobile) -->
+    <div id="cameraModal" class="camera-modal">
+        <div class="camera-modal-content">
+            <span class="close-camera-btn" id="closeCameraBtn">&times;</span>
+            <h3 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--secondary); font-size: 1.2rem;">Ambil Foto Luka Bakar</h3>
+            <p style="font-size: 0.8rem; color: #64748b; margin: 0 0 1rem 0; text-align: center;">Posisikan luka bakar Anda di tengah area bingkai panduan</p>
+            <div class="camera-stream-wrapper">
+                <video id="webcamVideo" autoplay playsinline muted></video>
+                <canvas id="webcamCanvas" style="display: none;"></canvas>
+                <div class="camera-overlay-frame">
+                    <div class="frame-corner top-left"></div>
+                    <div class="frame-corner top-right"></div>
+                    <div class="frame-corner bottom-left"></div>
+                    <div class="frame-corner bottom-right"></div>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button id="switchCameraBtn" class="camera-ctrl-btn btn-secondary-camera" type="button" title="Ganti Kamera">
+                    <i class="fa-solid fa-camera-rotate"></i>
+                </button>
+                <button id="capturePhotoBtn" class="camera-ctrl-btn btn-capture-camera" type="button" title="Ambil Foto">
+                    <i class="fa-solid fa-circle"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 
