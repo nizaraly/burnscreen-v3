@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="id">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BurnScreen | Skrining Luka Bakar</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+
+
+
+<body>
+
+    <div class="page-transition"></div>
+
+
+
+    <nav class="navbar">
+
+        <div class="nav-container">
+
+            <a href="index.html" class="logo">Burn<span>Screen</span></a>
+
+            <div class="nav-menu">
+
+                <a href="index.html" class="active">Skrining</a>
+
+                <a href="edukasi.html">Edukasi</a>
+
+                <a href="about.html" class="btn-about">Tentang Kami</a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <main class="container">
+
+        <header class="hero">
+
+            <h1>Cek Luka Bakar Anda Sekarang!</h1>
+
+            <p>Unggah foto untuk mengidentifikasi tingkat keparahan luka bakar.</p>
+
+        </header>
+
+
+
+        <div class="card">
+
+            <div class="upload-section" id="dropZone">
+
+                <i class="fa-solid fa-camera icon-upload"></i>
+
+                <p>Klik untuk Pilih Foto Luka</p>
+
+                <input type="file" id="imageInput" accept="image/*" hidden>
+
+            </div>
+
+
+
+            <div id="previewArea" class="hidden">
+
+                <img id="imgPreview" src="" alt="Preview">
+
+
+
+                <div class="question-box" style="margin-top: 1.5rem; margin-bottom: 1.5rem; text-align: left;">
+
+
+
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem; color: #333;">
+
+                        <i class="fa-solid fa-child"></i> Di bagian tubuh mana luka bakar berada?
+
+                    </label>
+
+                    <select id="bodyPartInput"
+                        style="width: 100%; padding: 0.8rem; margin-bottom: 1.5rem; border: 1px solid #ccc; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+
+                        <option value="lainnya">Bagian Tubuh Lainnya (Badan, Paha, Lengan)</option>
+
+                        <option value="muka">Muka / Wajah / Leher</option>
+
+                        <option value="tangan">Tangan / Telapak Tangan</option>
+
+                        <option value="kaki">Kaki / Telapak Kaki</option>
+
+                    </select>
+
+
+
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem; color: #333;">
+
+                        <i class="fa-solid fa-user-clock"></i> Berapa usia pasien?
+
+                    </label>
+
+                    <select id="ageInput"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+
+                        <option value="dewasa">Dewasa (Usia ≥ 15 tahun)</option>
+
+                        <option value="anak">Anak-anak (Usia ≤ 14 tahun)</option>
+
+                    </select>
+
+
+
+                </div>
+
+
+
+                <button id="analyzeBtn" class="btn-primary">Mulai Analisis Sekarang</button>
+
+            </div>
+
+
+
+            <div id="loader" class="loader hidden">
+
+                <div class="spinner"></div>
+
+                <p>Kami sedang bekerja...</p>
+
+            </div>
+
+
+
+            <div id="resultBox" class="result-card hidden">
+
+                <div class="badge" id="gradeBadge">Grade -</div>
+
+                <div class="advice-box">
+
+                    <strong>Rekomendasi Penanganan:</strong>
+
+                    <p id="resAdvice"></p>
+
+                </div>
+
+                <button onclick="location.reload()" class="btn-outline">Coba Foto Lain</button>
+
+            </div>
+
+        </div>
+
+
+
+        <p class="disclaimer">
+
+            Ini hanyalah skrining awal. Untuk diagnosis dan penanganan yang tepat, silakan konsultasikan ke tenaga medis
+
+            profesional.
+
+        </p>
+
+    </main>
+
+
+
+    <footer class="main-footer">
+
+        <p>Website ini dikembangkan untuk projek kolaborasi sistem informasi kesehatan dalam menangani kasus luka bakar
+
+            secara dini.</p>
+
+    </footer>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <script src="script.js"></script>
+
+    <script src="transition.js"></script>
+
+</body>
+
+
+
+</html>
