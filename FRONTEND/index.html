@@ -81,9 +81,9 @@
                 </div>
 
                 <!-- Input galeri / folder -->
-                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                <input type="file" id="imageInput" accept="image/*" class="hidden" title="Pilih gambar dari galeri">
                 <!-- Input kamera langsung (capture=environment = kamera belakang di HP) -->
-                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" title="Ambil foto menggunakan kamera">
 
             </div>
 
@@ -95,17 +95,17 @@
 
 
 
-                <div class="question-box" style="margin-top: 1.5rem; margin-bottom: 1.5rem; text-align: left;">
+                <div class="question-box">
 
 
 
-                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem; color: #333;">
+                    <label for="bodyPartInput">
 
                         <i class="fa-solid fa-child"></i> Di bagian tubuh mana luka bakar berada?
 
                     </label>
 
-                    <select id="bodyPartInput" class="question-select" style="margin-bottom: 1.5rem;">
+                    <select id="bodyPartInput" class="question-select" title="Pilih bagian tubuh">
 
                         <option value="tangan">Tangan</option>
 
@@ -115,13 +115,13 @@
 
 
 
-                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem; color: #333;">
+                    <label for="ageInput">
 
                         <i class="fa-solid fa-user-clock"></i> Berapa usia pasien?
 
                     </label>
 
-                    <select id="ageInput" class="question-select">
+                    <select id="ageInput" class="question-select" title="Pilih usia pasien">
 
                         <option value="dewasa">Dewasa (Usia ≥ 15 tahun)</option>
 
@@ -161,12 +161,12 @@
                 <img id="resultImgPreview" class="result-image" src="" alt="Preview Luka Bakar">
 
                 <!-- User Selection Metadata (Body Part & Age) -->
-                <div class="result-metadata" style="display: flex; justify-content: center; gap: 1rem; margin-top: -0.25rem; margin-bottom: 1.75rem; font-size: 0.98rem; font-weight: 600;">
-                    <span style="background: #f1f5f9; color: #475569; padding: 8px 16px; border-radius: 25px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;">
-                        <i class="fa-solid fa-child" style="color: #64748b; font-size: 1.1rem;"></i> Lokasi: &nbsp;<span id="metaBodyPartText" style="color: var(--secondary); font-weight: 700;">-</span>
+                <div class="result-metadata">
+                    <span>
+                        <i class="fa-solid fa-child"></i> Lokasi: &nbsp;<span id="metaBodyPartText">-</span>
                     </span>
-                    <span style="background: #f1f5f9; color: #475569; padding: 8px 16px; border-radius: 25px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;">
-                        <i class="fa-solid fa-user-clock" style="color: #64748b; font-size: 1.1rem;"></i> Usia: &nbsp;<span id="metaAgeText" style="color: var(--secondary); font-weight: 700;">-</span>
+                    <span>
+                        <i class="fa-solid fa-user-clock"></i> Usia: &nbsp;<span id="metaAgeText">-</span>
                     </span>
                 </div>
 
@@ -187,18 +187,18 @@
                 </div>
 
                 <!-- CLINIC FINDER GEOLOCATION BUTTON -->
-                <div class="clinic-finder-section" style="margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem; text-align: center;">
-                    <button class="btn-primary" id="findClinicBtn" onclick="findClinic()" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
-                        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;">
+                <div class="clinic-finder-section">
+                    <button class="btn-primary" id="findClinicBtn" onclick="findClinic()">
+                        <svg viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="3"/>
                             <path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/>
                         </svg>
                         <span>Cari Klinik Terdekat</span>
                     </button>
-                    <p id="clinicStatus" style="margin-top: 0.5rem; font-size: 0.82rem; color: #64748b; min-height: 1.2rem; margin-bottom: 0;"></p>
+                    <p id="clinicStatus"></p>
                 </div>
 
-                <button onclick="location.reload()" class="btn-outline" style="margin-top: 1.5rem;">Coba Foto Lain</button>
+                <button onclick="location.reload()" class="btn-outline">Coba Foto Lain</button>
             </div>
 
         </div>
@@ -231,11 +231,11 @@
     <div id="cameraModal" class="camera-modal">
         <div class="camera-modal-content">
             <span class="close-camera-btn" id="closeCameraBtn">&times;</span>
-            <h3 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--secondary); font-size: 1.2rem;">Ambil Foto Luka Bakar</h3>
-            <p style="font-size: 0.8rem; color: #64748b; margin: 0 0 1rem 0; text-align: center;">Posisikan luka bakar Anda di tengah area bingkai panduan</p>
+            <h3>Ambil Foto Luka Bakar</h3>
+            <p>Posisikan luka bakar Anda di tengah area bingkai panduan</p>
             <div class="camera-stream-wrapper">
                 <video id="webcamVideo" autoplay playsinline muted></video>
-                <canvas id="webcamCanvas" style="display: none;"></canvas>
+                <canvas id="webcamCanvas" class="hidden"></canvas>
                 <div class="camera-overlay-frame">
                     <div class="frame-corner top-left"></div>
                     <div class="frame-corner top-right"></div>
