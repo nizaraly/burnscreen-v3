@@ -5,7 +5,7 @@ let isModelLoaded = false;
 
 // ── 1. LOAD MODEL ──────────────────────────────────────────────────────────────
 async function init() {
-    const modelURL    = URL_MODEL + "model.json";
+    const modelURL = URL_MODEL + "model.json";
     const metadataURL = URL_MODEL + "metadata.json";
 
     try {
@@ -21,10 +21,10 @@ async function init() {
 init();
 
 // ── 2. UPLOAD & PREVIEW GAMBAR ─────────────────────────────────────────────────
-const imageInput  = document.getElementById('imageInput');
+const imageInput = document.getElementById('imageInput');
 const cameraInput = document.getElementById('cameraInput');
-const dropZone    = document.getElementById('dropZone');
-const imgPreview  = document.getElementById('imgPreview');
+const dropZone = document.getElementById('dropZone');
+const imgPreview = document.getElementById('imgPreview');
 
 // Simpan file aktif dari sumber manapun (folder / kamera / drag-drop)
 let currentFile = null;
@@ -62,7 +62,7 @@ function handleImageFile(file) {
 }
 
 // ── Input dari galeri / folder ──
-imageInput.onchange  = (e) => handleImageFile(e.target.files[0]);
+imageInput.onchange = (e) => handleImageFile(e.target.files[0]);
 
 // ── Input dari kamera langsung (Khusus Fallback / Mobile) ──
 cameraInput.onchange = (e) => handleImageFile(e.target.files[0]);
@@ -74,11 +74,11 @@ function isMobileDevice() {
 }
 
 // ── KONTROLLER MODAL KAMERA (UNTUK DESKTOP/LAPTOP & WEBCAM) ──
-const openCameraBtn   = document.getElementById('openCameraBtn');
-const cameraModal     = document.getElementById('cameraModal');
-const closeCameraBtn   = document.getElementById('closeCameraBtn');
-const webcamVideo     = document.getElementById('webcamVideo');
-const webcamCanvas    = document.getElementById('webcamCanvas');
+const openCameraBtn = document.getElementById('openCameraBtn');
+const cameraModal = document.getElementById('cameraModal');
+const closeCameraBtn = document.getElementById('closeCameraBtn');
+const webcamVideo = document.getElementById('webcamVideo');
+const webcamCanvas = document.getElementById('webcamCanvas');
 const switchCameraBtn = document.getElementById('switchCameraBtn');
 const capturePhotoBtn = document.getElementById('capturePhotoBtn');
 
@@ -101,7 +101,7 @@ async function openCameraModal() {
     cameraModal.classList.add('active');
     videoDevices = [];
     activeDeviceIndex = 0;
-    
+
     try {
         // Minta izin kamera dan jalankan stream pertama kali (Hanya memicu 1 prompt izin)
         const constraints = {
@@ -111,7 +111,7 @@ async function openCameraModal() {
                 height: { ideal: 720 }
             }
         };
-        
+
         localStream = await navigator.mediaDevices.getUserMedia(constraints);
         webcamVideo.srcObject = localStream;
 
@@ -119,11 +119,11 @@ async function openCameraModal() {
         // kita bisa mencari list device kamera lain tanpa double-prompt
         const devices = await navigator.mediaDevices.enumerateDevices();
         videoDevices = devices.filter(device => device.kind === 'videoinput');
-        
+
         // Atur tombol switch camera
         if (videoDevices.length > 1) {
             switchCameraBtn.style.display = 'flex';
-            
+
             // Cari index kamera aktif saat ini agar sinkron saat tombol switch ditekan
             const activeTrack = localStream.getVideoTracks()[0];
             if (activeTrack) {
@@ -216,7 +216,7 @@ capturePhotoBtn.onclick = () => {
     webcamCanvas.height = height;
 
     const ctx = webcamCanvas.getContext('2d');
-    
+
     // Gambar frame video saat ini ke canvas
     ctx.drawImage(webcamVideo, 0, 0, width, height);
 
@@ -224,10 +224,10 @@ capturePhotoBtn.onclick = () => {
         if (blob) {
             // Buat berkas virtual File dari Blob
             const file = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
-            
+
             // Kirim file ke handler utama untuk di-preview dan diproses
             handleImageFile(file);
-            
+
             // Tutup kamera setelah selesai mengambil gambar
             closeCameraModal();
         }
@@ -273,7 +273,7 @@ document.getElementById('analyzeBtn').onclick = async () => {
     }
 
     const selectedBodyPart = document.getElementById('bodyPartInput').value;
-    const selectedAge      = document.getElementById('ageInput').value;
+    const selectedAge = document.getElementById('ageInput').value;
 
     document.getElementById('bodyPartInput').disabled = true;
     document.getElementById('ageInput').disabled = true;
@@ -315,13 +315,32 @@ document.getElementById('analyzeBtn').onclick = async () => {
 // ── 4. TAMPILKAN HASIL ─────────────────────────────────────────────────────────
 function displayResult(grade, bodyPart, age) {
     document.getElementById('loader').classList.add('hidden');
+    document.getElementById('previewArea').classList.add('hidden');
     document.getElementById('resultBox').classList.remove('hidden');
+
+    // Copy image to results view
+    const resultImg = document.getElementById('resultImgPreview');
+    if (resultImg) {
+        resultImg.src = imgPreview.src;
+    }
+
+    // Tampilkan data input pilihan lokasi & usia di bawah gambar
+    const metaBodyPartText = document.getElementById('metaBodyPartText');
+    const metaAgeText = document.getElementById('metaAgeText');
+    if (metaBodyPartText) {
+        metaBodyPartText.innerText = bodyPart === 'tangan' ? 'Tangan' : 'Kaki';
+    }
+    if (metaAgeText) {
+        metaAgeText.innerText = age === 'dewasa' ? 'Dewasa' : 'Anak-anak';
+    }
+
+
 
     // Ubah judul hero
     document.querySelector('.hero h1').innerText = "Pengecekan Selesai!";
     document.querySelector('.hero p').classList.add('hidden');
 
-    const badge  = document.getElementById('gradeBadge');
+    const badge = document.getElementById('gradeBadge');
     const advice = document.getElementById('resAdvice');
     const resultCard = document.getElementById('resultBox');
 
@@ -330,7 +349,7 @@ function displayResult(grade, bodyPart, age) {
 
     // FIX: Set warna badge & border hasil dinamis sesuai grade
     const gradeLower = grade.toLowerCase();
-    badge.className  = 'badge'; // reset semua kelas warna lama
+    badge.className = 'badge'; // reset semua kelas warna lama
 
     if (gradeLower.includes("normal")) {
         badge.classList.add('badge-normal');
@@ -357,31 +376,117 @@ function displayResult(grade, bodyPart, age) {
         return;
     }
 
-    // Peringatan khusus pediatrik (anak-anak)
-    let pediatricWarning = "";
-    if (age === "anak") {
-        pediatricWarning = `<br><br><strong style="color:#e63946;">
-            ⚠️ PERHATIAN PEDIATRIK: Pasien anak lebih rentan terhadap syok dan dehidrasi. 
-            Segera periksakan ke IGD jika luas luka melebihi telapak tangan anak.
-        </strong>`;
-    }
+
 
     let baseAdvice = "";
+    let warningText = "";
 
     // ── MATRIKS REKOMENDASI (Silakan edit konten di bawah ini sesuai dokumen Anda) ──
     if (gradeLower.includes("1")) {
         // --- GRADE 1: SUPERFICIAL ---
         if (bodyPart === "tangan") {
             if (age === "anak") {
-                baseAdvice = `[Rekomendasi Grade 1 - Tangan - Anak-anak: Silakan ganti dengan teks dari dokumen Anda]`;
+                baseAdvice = `
+<strong>Meredakan nyeri dan mempercepat pemulihan kulit</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan cincin, gelang, jam tangan, atau aksesori lainnya.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan tangan untuk mengurangi pembengkakan.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jaga kebersihan area luka dan gunakan kasa pelindung bila diperlukan.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lakukan gerakan ringan jari dan pergelangan tangan jika tidak menimbulkan nyeri.
+    </li>
+</ul>
+`;
             } else {
-                baseAdvice = `[Rekomendasi Grade 1 - Tangan - Dewasa: Silakan ganti dengan teks dari dokumen Anda]`;
+                baseAdvice = `
+<strong>Rekomendasi Penanganan</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan cincin, jam tangan, gelang, atau aksesori lainnya.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Kurangi penggunaan tangan dan hindari aktivitas berat.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan tangan untuk mengurangi pembengkakan.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Oleskan aloe vera atau pelembap pada area luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+</ul>
+<div style="margin-top: 1.5rem;">
+    <strong style="color: #e63946; display: block; margin-bottom: 0.75rem;">Hindari:</strong>
+    <table style="width: 100%; border-collapse: collapse; background: #fff5f5; border: 1px solid #fee2e2; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <tbody>
+            <tr>
+                <td style="padding: 10px 14px; font-size: 0.85rem; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-xmark" style="color: #ef4444; font-size: 1rem; flex-shrink: 0;"></i>
+                    <span>Hindari deterjen, bahan kimia, dan air panas berlebihan.</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+`;
             }
         } else if (bodyPart === "kaki") {
             if (age === "anak") {
-                baseAdvice = `[Rekomendasi Grade 1 - Kaki - Anak-anak: Silakan ganti dengan teks dari dokumen Anda]`;
+                baseAdvice = `
+<strong>Meredakan nyeri dan mempercepat pemulihan kulit</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan sepatu atau aksesori yang tidak menempel.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Istirahatkan dan kurangi aktivitas pada kaki.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan kaki bila bengkak.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Oleskan aloe vera atau pelembap.
+    </li>
+</ul>
+`;
             } else {
-                baseAdvice = `[Rekomendasi Grade 1 - Kaki - Dewasa: Silakan ganti dengan teks dari dokumen Anda]`;
+                baseAdvice = `
+<strong>Meredakan nyeri dan mempercepat pemulihan kulit</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan sepatu, kaus kaki, atau aksesori yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Istirahatkan kaki dan hindari aktivitas berlebihan.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan kaki untuk mengurangi pembengkakan.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Oleskan aloe vera atau pelembap pada area luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Gunakan pereda nyeri sesuai petunjuk bila diperlukan.
+    </li>
+</ul>
+`;
             }
         }
 
@@ -389,15 +494,110 @@ function displayResult(grade, bodyPart, age) {
         // --- GRADE 2: PARTIAL THICKNESS ---
         if (bodyPart === "tangan") {
             if (age === "anak") {
-                baseAdvice = `[Rekomendasi Grade 2 - Tangan - Anak-anak: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Pasien anak lebih rentan terhadap syok dan dehidrasi. <strong>Segera periksakan ke IGD jika luas luka melebihi telapak tangan anak.</strong>`;
+                baseAdvice = `
+<strong>Melindungi luka dan mencegah infeksi</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan cincin, gelang, atau jam tangan yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jangan memecahkan atau mengelupas lepuh.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril non-stick secara longgar.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan tangan untuk mengurangi pembengkakan.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lakukan gerakan ringan jari jika tidak menimbulkan nyeri.
+    </li>
+</ul>
+`;
             } else {
-                baseAdvice = `[Rekomendasi Grade 2 - Tangan - Dewasa: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Segera periksa ke tenaga kesehatan, terutama jika luka mengenai jari, telapak tangan, atau area sendi.`;
+                baseAdvice = `
+<strong>Melindungi luka dan mencegah infeksi</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan seluruh perhiasan dari tangan.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jangan memecahkan atau menggaruk lepuh.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril non-stick dan ganti jika kotor atau basah.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Kurangi aktivitas yang memberi tekanan pada tangan.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan tangan untuk mengurangi pembengkakan.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lakukan latihan ringan jari dan pergelangan setelah nyeri berkurang.
+    </li>
+</ul>
+`;
             }
         } else if (bodyPart === "kaki") {
             if (age === "anak") {
-                baseAdvice = `[Rekomendasi Grade 2 - Kaki - Anak-anak: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Pasien anak lebih rentan terhadap syok dan dehidrasi. <strong>Segera periksakan ke IGD jika luas luka melebihi telapak tangan anak.</strong>`;
+                baseAdvice = `
+<strong>Melindungi luka dan mencegah infeksi</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan alas kaki yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jangan memecahkan atau menggaruk lepuh.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril non-stick.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Batasi berjalan dan hindari aktivitas berat.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan kaki untuk mengurangi pembengkakan.
+    </li>
+</ul>
+`;
             } else {
-                baseAdvice = `[Rekomendasi Grade 2 - Kaki - Dewasa: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Periksa ke tenaga kesehatan jika luka luas, lepuh besar, terdapat tanda infeksi, atau sulit berjalan.`;
+                baseAdvice = `
+<strong>Melindungi luka dan mencegah infeksi</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Dinginkan luka dengan air mengalir selama 20 menit.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan alas kaki yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jangan memecahkan atau menggaruk lepuh.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril non-stick.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Batasi berjalan dan hindari aktivitas berat.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan kaki untuk mengurangi pembengkakan.
+    </li>
+</ul>
+`;
             }
         }
 
@@ -405,15 +605,114 @@ function displayResult(grade, bodyPart, age) {
         // --- GRADE 3: FULL THICKNESS ---
         if (bodyPart === "tangan") {
             if (age === "anak") {
-                baseAdvice = `[Rekomendasi Grade 3 - Tangan - Anak-anak: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Pasien anak lebih rentan terhadap syok dan dehidrasi. <strong>Segera bawa ke rumah sakit untuk mendapatkan penanganan medis.</strong>`;
+                baseAdvice = `
+<strong>Rekomendasi Penanganan</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jauhkan anak dari sumber panas.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan cincin, gelang, atau aksesori yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril atau kain bersih.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan tangan jika memungkinkan.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jaga tubuh anak tetap hangat.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Melepaskan pakaian atau benda yang menempel pada luka.
+    </li>
+</ul>
+<div style="margin-top: 1.5rem;">
+    <strong style="color: #e63946; display: block; margin-bottom: 0.75rem;">Hindari / Jangan Dilakukan:</strong>
+    <table style="width: 100%; border-collapse: collapse; background: #fff5f5; border: 1px solid #fee2e2; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <tbody>
+            <tr style="border-bottom: 1px solid #fee2e2;">
+                <td style="padding: 10px 14px; font-size: 0.85rem; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-xmark" style="color: #ef4444; font-size: 1rem; flex-shrink: 0;"></i>
+                    <span>Mengoleskan pasta gigi, mentega, minyak, or bahan tradisional lainnya.</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px 14px; font-size: 0.85rem; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-xmark" style="color: #ef4444; font-size: 1rem; flex-shrink: 0;"></i>
+                    <span>Memecahkan jaringan atau kulit yang rusak.</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+`;
             } else {
-                baseAdvice = `[Rekomendasi Grade 3 - Tangan - Dewasa: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Segera bawa ke rumah sakit untuk mendapatkan penanganan medis.`;
+                baseAdvice = `
+<strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jauhkan korban dari sumber panas atau penyebab luka bakar.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan cincin, gelang, jam tangan, atau perhiasan yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril atau kain bersih secara longgar.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan tangan jika memungkinkan untuk mengurangi pembengkakan.
+    </li>
+</ul>
+`;
             }
         } else if (bodyPart === "kaki") {
             if (age === "anak") {
-                baseAdvice = `[Rekomendasi Grade 3 - Kaki - Anak-anak: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Pasien anak lebih rentan terhadap syok dan dehidrasi. <strong>Segera bawa ke rumah sakit untuk mendapatkan penanganan medis.</strong>`;
+                baseAdvice = `
+<strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jauhkan korban dari sumber panas.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan sepatu, kaus kaki, dan aksesori yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril atau kain bersih secara longgar.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan kaki lebih tinggi dari jantung jika memungkinkan.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jaga suhu tubuh agar tetap hangat.
+    </li>
+</ul>
+`;
             } else {
-                baseAdvice = `[Rekomendasi Grade 3 - Kaki - Dewasa: Silakan ganti dengan teks dari dokumen Anda]`;
+                warningText = `<strong>WARNING!</strong> Segera bawa ke rumah sakit untuk mendapatkan penanganan medis.`;
+                baseAdvice = `
+<strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
+<ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jauhkan korban dari sumber panas.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lepaskan sepatu, kaus kaki, dan aksesori yang tidak menempel pada luka.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tutup luka dengan kasa steril atau kain bersih secara longgar.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Tinggikan kaki jika memungkinkan.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jaga tubuh tetap hangat.
+    </li>
+</ul>
+`;
             }
         }
     } else {
@@ -421,5 +720,83 @@ function displayResult(grade, bodyPart, age) {
     }
 
     // Tampilkan hasil rekomendasi klinis ke UI
-    advice.innerHTML = baseAdvice + pediatricWarning;
+    advice.innerHTML = baseAdvice;
+
+    // Tampilkan warning box jika ada warningText
+    const warningBox = document.getElementById('resWarning');
+    if (warningBox) {
+        if (warningText) {
+            warningBox.innerHTML = warningText;
+            warningBox.classList.remove('hidden');
+        } else {
+            warningBox.classList.add('hidden');
+        }
+    }
+}
+
+// ── CLINIC FINDER LOGIC ──
+function findClinic() {
+    const btn = document.getElementById('findClinicBtn');
+    const status = document.getElementById('clinicStatus');
+
+    if (!navigator.geolocation) {
+        showClinicStatus('Browser Anda tidak mendukung geolokasi.', 'error');
+        return;
+    }
+
+    setClinicLoading(true);
+    showClinicStatus('Meminta izin lokasi...', '');
+
+    navigator.geolocation.getCurrentPosition(
+        function (pos) {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            showClinicStatus('Lokasi ditemukan! Membuka Google Maps...', 'success');
+            setClinicLoading(false);
+
+            const query = encodeURIComponent('klinik terdekat');
+            const url = `https://www.google.com/maps/search/${query}/@${lat},${lng},15z`;
+
+            setTimeout(function () {
+                window.open(url, '_blank');
+                showClinicStatus('Google Maps telah dibuka di tab baru.', 'success');
+            }, 600);
+        },
+        function (err) {
+            setClinicLoading(false);
+            const msgs = {
+                1: 'Izin lokasi ditolak. Harap aktifkan di pengaturan browser.',
+                2: 'Posisi tidak tersedia. Pastikan GPS aktif.',
+                3: 'Permintaan lokasi habis waktu. Coba lagi.',
+            };
+            showClinicStatus(msgs[err.code] || 'Gagal mendapatkan lokasi.', 'error');
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+
+    function setClinicLoading(on) {
+        if (on) {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mendeteksi lokasi...`;
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = `
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/>
+                </svg>
+                <span>Cari Klinik Terdekat</span>`;
+        }
+    }
+
+    function showClinicStatus(msg, type) {
+        status.textContent = msg;
+        if (type === 'error') {
+            status.style.color = '#ef4444';
+        } else if (type === 'success') {
+            status.style.color = '#22c55e';
+        } else {
+            status.style.color = '#64748b';
+        }
+    }
 }

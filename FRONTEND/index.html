@@ -157,19 +157,48 @@
 
 
             <div id="resultBox" class="result-card hidden">
+                <!-- Image Preview in results -->
+                <img id="resultImgPreview" class="result-image" src="" alt="Preview Luka Bakar">
 
-                <div class="badge" id="gradeBadge">Grade -</div>
-
-                <div class="advice-box">
-
-                    <strong>Rekomendasi Penanganan:</strong>
-
-                    <p id="resAdvice"></p>
-
+                <!-- User Selection Metadata (Body Part & Age) -->
+                <div class="result-metadata" style="display: flex; justify-content: center; gap: 1rem; margin-top: -0.25rem; margin-bottom: 1.75rem; font-size: 0.98rem; font-weight: 600;">
+                    <span style="background: #f1f5f9; color: #475569; padding: 8px 16px; border-radius: 25px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;">
+                        <i class="fa-solid fa-child" style="color: #64748b; font-size: 1.1rem;"></i> Lokasi: &nbsp;<span id="metaBodyPartText" style="color: var(--secondary); font-weight: 700;">-</span>
+                    </span>
+                    <span style="background: #f1f5f9; color: #475569; padding: 8px 16px; border-radius: 25px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;">
+                        <i class="fa-solid fa-user-clock" style="color: #64748b; font-size: 1.1rem;"></i> Usia: &nbsp;<span id="metaAgeText" style="color: var(--secondary); font-weight: 700;">-</span>
+                    </span>
                 </div>
 
-                <button onclick="location.reload()" class="btn-outline">Coba Foto Lain</button>
+                <div class="result-header">
+                    <span class="result-meta-label">Hasil Skrining Awal</span>
+                    <div class="result-badge-row">
+                        <h2 class="result-title">Identifikasi Tingkat Luka Bakar</h2>
+                        <div class="badge" id="gradeBadge">Grade -</div>
+                    </div>
+                </div>
 
+                <!-- WARNING BOX -->
+                <div id="resWarning" class="medical-warning-box hidden"></div>
+
+                <div class="advice-box">
+                    <strong>Rekomendasi Penanganan Klinis:</strong>
+                    <div id="resAdvice"></div>
+                </div>
+
+                <!-- CLINIC FINDER GEOLOCATION BUTTON -->
+                <div class="clinic-finder-section" style="margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem; text-align: center;">
+                    <button class="btn-primary" id="findClinicBtn" onclick="findClinic()" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/>
+                        </svg>
+                        <span>Cari Klinik Terdekat</span>
+                    </button>
+                    <p id="clinicStatus" style="margin-top: 0.5rem; font-size: 0.82rem; color: #64748b; min-height: 1.2rem; margin-bottom: 0;"></p>
+                </div>
+
+                <button onclick="location.reload()" class="btn-outline" style="margin-top: 1.5rem;">Coba Foto Lain</button>
             </div>
 
         </div>

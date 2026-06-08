@@ -233,13 +233,14 @@ body {
 /* Badge dasar */
 .badge {
     display: inline-block;
-    padding: 6px 18px;
+    padding: 10px 24px;
     color: white;
     border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    letter-spacing: 0.5px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    letter-spacing: 0.75px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: background 0.4s ease;
 }
 
@@ -839,4 +840,74 @@ body {
     cursor: not-allowed;
     border-color: #cbd5e1;
     background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* --- Hasil Screening & Clinic Finder Styles --- */
+.container {
+    transition: max-width 0.4s ease;
+}
+
+.result-header {
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+    text-align: left;
+}
+
+.result-meta-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.result-badge-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.result-title {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--secondary);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.result-image {
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 1.25rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Medical Warning Box --- */
+.medical-warning-box {
+    background-color: #fee2e2;
+    border-left: 5px solid #ef4444;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.medical-warning-box strong {
+    color: #7f1d1d;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 700;
 }
