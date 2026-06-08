@@ -5,29 +5,27 @@ let isModelLoaded = false;
 
 // ── 1. LOAD MODEL ──────────────────────────────────────────────────────────────
 async function init() {
-    const modelURL = URL_MODEL + "model.json";
+    const modelURL    = URL_MODEL + "model.json";
     const metadataURL = URL_MODEL + "metadata.json";
 
     try {
         model = await tmImage.load(modelURL, metadataURL);
         isModelLoaded = true;
-        console.log("✅ Model ML (Teachable Machine) berhasil dimuat.");
+        console.log("✅ Model ML berhasil dimuat.");
     } catch (e) {
         console.error("❌ Gagal memuat model. Pastikan koneksi internet aktif.", e);
-        alert("Gagal memuat model AI. Periksa koneksi internet lalu refresh halaman.");
+        alert("Gagal memuat model. Periksa koneksi internet lalu segarkan halaman.");
     }
 }
 
 init();
 
 // ── 2. UPLOAD & PREVIEW GAMBAR ─────────────────────────────────────────────────
-const imageInput = document.getElementById('imageInput');
+const imageInput  = document.getElementById('imageInput');
 const cameraInput = document.getElementById('cameraInput');
-const dropZone = document.getElementById('dropZone');
-const imgPreview = document.getElementById('imgPreview');
+const dropZone    = document.getElementById('dropZone');
+const imgPreview  = document.getElementById('imgPreview');
 
-// Simpan file aktif dari sumber manapun (folder / kamera / drag-drop)
-let currentFile = null;
 
 // ── Fungsi terpusat: proses file gambar dari sumber apapun ──
 function handleImageFile(file) {
@@ -39,7 +37,6 @@ function handleImageFile(file) {
         return;
     }
 
-    currentFile = file; // Simpan untuk dikirim ke backend nanti
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -62,7 +59,7 @@ function handleImageFile(file) {
 }
 
 // ── Input dari galeri / folder ──
-imageInput.onchange = (e) => handleImageFile(e.target.files[0]);
+imageInput.onchange  = (e) => handleImageFile(e.target.files[0]);
 
 // ── Input dari kamera langsung (Khusus Fallback / Mobile) ──
 cameraInput.onchange = (e) => handleImageFile(e.target.files[0]);
@@ -74,11 +71,11 @@ function isMobileDevice() {
 }
 
 // ── KONTROLLER MODAL KAMERA (UNTUK DESKTOP/LAPTOP & WEBCAM) ──
-const openCameraBtn = document.getElementById('openCameraBtn');
-const cameraModal = document.getElementById('cameraModal');
-const closeCameraBtn = document.getElementById('closeCameraBtn');
-const webcamVideo = document.getElementById('webcamVideo');
-const webcamCanvas = document.getElementById('webcamCanvas');
+const openCameraBtn   = document.getElementById('openCameraBtn');
+const cameraModal     = document.getElementById('cameraModal');
+const closeCameraBtn   = document.getElementById('closeCameraBtn');
+const webcamVideo     = document.getElementById('webcamVideo');
+const webcamCanvas    = document.getElementById('webcamCanvas');
 const switchCameraBtn = document.getElementById('switchCameraBtn');
 const capturePhotoBtn = document.getElementById('capturePhotoBtn');
 
@@ -101,7 +98,7 @@ async function openCameraModal() {
     cameraModal.classList.add('active');
     videoDevices = [];
     activeDeviceIndex = 0;
-
+    
     try {
         // Minta izin kamera dan jalankan stream pertama kali (Hanya memicu 1 prompt izin)
         const constraints = {
@@ -111,7 +108,7 @@ async function openCameraModal() {
                 height: { ideal: 720 }
             }
         };
-
+        
         localStream = await navigator.mediaDevices.getUserMedia(constraints);
         webcamVideo.srcObject = localStream;
 
@@ -119,11 +116,11 @@ async function openCameraModal() {
         // kita bisa mencari list device kamera lain tanpa double-prompt
         const devices = await navigator.mediaDevices.enumerateDevices();
         videoDevices = devices.filter(device => device.kind === 'videoinput');
-
+        
         // Atur tombol switch camera
         if (videoDevices.length > 1) {
             switchCameraBtn.style.display = 'flex';
-
+            
             // Cari index kamera aktif saat ini agar sinkron saat tombol switch ditekan
             const activeTrack = localStream.getVideoTracks()[0];
             if (activeTrack) {
@@ -216,7 +213,7 @@ capturePhotoBtn.onclick = () => {
     webcamCanvas.height = height;
 
     const ctx = webcamCanvas.getContext('2d');
-
+    
     // Gambar frame video saat ini ke canvas
     ctx.drawImage(webcamVideo, 0, 0, width, height);
 
@@ -224,10 +221,10 @@ capturePhotoBtn.onclick = () => {
         if (blob) {
             // Buat berkas virtual File dari Blob
             const file = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
-
+            
             // Kirim file ke handler utama untuk di-preview dan diproses
             handleImageFile(file);
-
+            
             // Tutup kamera setelah selesai mengambil gambar
             closeCameraModal();
         }
@@ -273,7 +270,7 @@ document.getElementById('analyzeBtn').onclick = async () => {
     }
 
     const selectedBodyPart = document.getElementById('bodyPartInput').value;
-    const selectedAge = document.getElementById('ageInput').value;
+    const selectedAge      = document.getElementById('ageInput').value;
 
     document.getElementById('bodyPartInput').disabled = true;
     document.getElementById('ageInput').disabled = true;
@@ -312,7 +309,7 @@ document.getElementById('analyzeBtn').onclick = async () => {
     }
 };
 
-// ── 4. TAMPILKAN HASIL ─────────────────────────────────────────────────────────
+// ── 4. TAMPILKAN HASIL (Logika & Matriks Rekomendasi dari eas-web-sher) ───────────────────────────
 function displayResult(grade, bodyPart, age) {
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('previewArea').classList.add('hidden');
@@ -333,8 +330,6 @@ function displayResult(grade, bodyPart, age) {
     if (metaAgeText) {
         metaAgeText.innerText = age === 'dewasa' ? 'Dewasa' : 'Anak-anak';
     }
-
-
 
     // Ubah judul hero
     document.querySelector('.hero h1').innerText = "Pengecekan Selesai!";
@@ -376,12 +371,10 @@ function displayResult(grade, bodyPart, age) {
         return;
     }
 
-
-
     let baseAdvice = "";
     let warningText = "";
 
-    // ── MATRIKS REKOMENDASI (Silakan edit konten di bawah ini sesuai dokumen Anda) ──
+    // ── MATRIKS REKOMENDASI DARI EAS-WEB-SHER ──
     if (gradeLower.includes("1")) {
         // --- GRADE 1: SUPERFICIAL ---
         if (bodyPart === "tangan") {
@@ -734,7 +727,7 @@ function displayResult(grade, bodyPart, age) {
     }
 }
 
-// ── CLINIC FINDER LOGIC ──
+// ── CLINIC FINDER LOGIC (dari eas-web-sher) ──
 function findClinic() {
     const btn = document.getElementById('findClinicBtn');
     const status = document.getElementById('clinicStatus');

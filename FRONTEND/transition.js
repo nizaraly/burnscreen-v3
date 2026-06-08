@@ -29,6 +29,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // ── SIDEBAR MENU TOGGLE FOR MOBILE ──
+    const menuToggle = document.getElementById('menuToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (menuToggle && closeSidebar && sidebar && sidebarOverlay) {
+        const openMenu = () => {
+            sidebar.classList.add('active');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeMenu = () => {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        menuToggle.addEventListener('click', openMenu);
+        closeSidebar.addEventListener('click', closeMenu);
+        sidebarOverlay.addEventListener('click', closeMenu);
+
+        sidebar.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    }
 });
 
 // Menghindari bug layar tetap putih ketika user menekan navigasi 'Back' browser
