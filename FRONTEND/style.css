@@ -35,6 +35,7 @@ body::before {
     margin: 6vh auto 3rem;
     padding: 0 1rem;
     box-sizing: border-box;
+    -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
 }
 
@@ -83,6 +84,7 @@ body::before {
     padding: 2rem;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.6);
 }
@@ -161,6 +163,7 @@ body::before {
     color: var(--primary);
     background: transparent;
     transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.2s;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -406,12 +409,26 @@ body::before {
     padding: 3rem 2rem;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.info-section {
+\.info-section {
+    margin-top: 3rem;
     margin-bottom: 3rem;
+}
+
+.info-section h2 {
+    color: var(--secondary);
+    margin-bottom: 1rem;
+}
+
+.info-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #444;
 }
 
 .card-edu {
@@ -421,6 +438,7 @@ body::before {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     text-align: center;
     border-left: 5px solid var(--primary);
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
 }
 
@@ -436,6 +454,7 @@ body::before {
     padding: 2.5rem 2rem;
     border-radius: 20px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
@@ -744,6 +763,7 @@ body::before {
     width: 100%;
     height: 100%;
     background: rgba(15, 23, 42, 0.75);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     display: flex;
     justify-content: center;
@@ -1186,4 +1206,105 @@ body::before {
     display: block;
     margin-bottom: 0.25rem;
     font-weight: 700;
+
+/* --- Additional Clean Styling (Moved from Inline Styles) --- */
+.question-box {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.question-box label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.question-box select:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+.result-metadata {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: -0.25rem;
+    margin-bottom: 1.75rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+}
+
+.result-metadata span {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 8px 16px;
+    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.result-metadata span i {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.result-metadata span span {
+    color: var(--secondary);
+    font-weight: 700;
+}
+
+.clinic-finder-section {
+    margin-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1.5rem;
+    text-align: center;
+}
+
+#findClinicBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+#findClinicBtn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#clinicStatus {
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+    color: #64748b;
+    min-height: 1.2rem;
+    margin-bottom: 0;
+}
+
+#resultBox .btn-outline {
+    margin-top: 1.5rem;
+}
+
+.camera-modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--secondary);
+    font-size: 1.2rem;
+}
+
+.camera-modal-content p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0 0 1rem 0;
+    text-align: center;
 }
