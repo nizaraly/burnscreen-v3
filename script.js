@@ -1,4 +1,4 @@
-const URL_MODEL = "https://teachablemachine.withgoogle.com/models/uW9NLaB5x/";
+const URL_MODEL = "https://teachablemachine.withgoogle.com/models/HYg4GPZE6/"; 
 
 let model;
 let isModelLoaded = false;
