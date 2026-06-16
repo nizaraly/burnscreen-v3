@@ -751,8 +751,8 @@ function findClinic() {
             const url = `https://www.google.com/maps/search/${query}/@${lat},${lng},15z`;
 
             setTimeout(function () {
-                window.open(url, '_blank');
-                showClinicStatus('Google Maps telah dibuka di tab baru.', 'success');
+                window.location.href = url;
+                showClinicStatus('Membuka Google Maps...', 'success');
             }, 600);
         },
         function (err) {
