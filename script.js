@@ -28,15 +28,50 @@ const imgPreview  = document.getElementById('imgPreview');
 
 
 // ── Fungsi terpusat: proses file gambar dari sumber apapun ──
-function handleImageFile(file) {
+async function handleImageFile(file) {
     if (!file) return;
 
-    // Validasi tipe file
-    if (!file.type.startsWith('image/')) {
-        alert('File tidak valid. Harap pilih file gambar (JPG, PNG, WEBP, dll).');
+    // Validasi tipe file & ekstensi (mendukung jpg, jpeg, png, gif, tiff, heic)
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'tiff', 'heic'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    const isImageMime = file.type.startsWith('image/');
+
+    if (!allowedExtensions.includes(fileExtension) && !isImageMime) {
+        alert('Format file tidak didukung. Harap pilih gambar dengan format JPG, JPEG, PNG, GIF, TIFF, atau HEIC.');
         return;
     }
 
+    let processedFile = file;
+
+    // Jika formatnya HEIC, konversi menjadi JPEG agar dapat dirender di browser dan dibaca oleh Model AI
+    if (fileExtension === 'heic') {
+        const dropText = document.querySelector('.drop-text');
+        const originalText = dropText ? dropText.innerText : 'Seret & lepas foto di sini';
+        if (dropText) {
+            dropText.innerText = 'Mengonversi gambar HEIC...';
+        }
+
+        try {
+            if (typeof heic2any === 'function') {
+                const convertedBlob = await heic2any({
+                    blob: file,
+                    toType: 'image/jpeg',
+                    quality: 0.8
+                });
+                const blob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+                processedFile = new File([blob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
+            } else {
+                console.warn('Library heic2any belum selesai dimuat.');
+            }
+        } catch (error) {
+            console.error('Gagal mengonversi file HEIC:', error);
+            alert('Gagal memproses gambar HEIC. Silakan gunakan format JPG/PNG atau pastikan file tidak rusak.');
+            if (dropText) dropText.innerText = originalText;
+            return;
+        } finally {
+            if (dropText) dropText.innerText = originalText;
+        }
+    }
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -55,7 +90,7 @@ function handleImageFile(file) {
         document.querySelector('.hero h1').innerText = "Cek Luka Bakar Anda Sekarang!";
         document.querySelector('.hero p').classList.remove('hidden');
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(processedFile);
 }
 
 // ── Input dari galeri / folder ──
