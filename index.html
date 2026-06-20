@@ -63,9 +63,9 @@
                     </button>
                 </div>
                 <!-- Input galeri / folder -->
-                <input type="file" id="imageInput" accept="image/*" class="hidden" title="Pilih gambar dari galeri">
+                <input type="file" id="imageInput" accept=".jpg, .jpeg, .png, .gif, .tiff, .heic, image/jpeg, image/png, image/gif, image/tiff, image/heic" class="hidden" title="Pilih gambar dari galeri">
                 <!-- Input kamera langsung (capture=environment = kamera belakang di HP) -->
-                <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" title="Ambil foto menggunakan kamera">
+                <input type="file" id="cameraInput" accept=".jpg, .jpeg, .png, .gif, .tiff, .heic, image/jpeg, image/png, image/gif, image/tiff, image/heic" capture="environment" class="hidden" title="Ambil foto menggunakan kamera">
             </div>
 
             <div id="previewArea" class="hidden">
@@ -183,6 +183,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <script src="script.js"></script>
     <script src="transition.js"></script>
 </body>
