@@ -31,13 +31,30 @@ const imgPreview = document.getElementById('imgPreview');
 async function handleImageFile(file) {
     if (!file) return;
 
-    // Validasi tipe file & ekstensi (mendukung jpg, jpeg, png, gif, tiff, heic)
+    // Validasi tipe file & ekstensi secara ketat (mendukung jpg, jpeg, png, gif, tiff, heic)
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'tiff', 'heic'];
     const fileExtension = file.name.split('.').pop().toLowerCase();
-    const isImageMime = file.type.startsWith('image/');
-
-    if (!allowedExtensions.includes(fileExtension) && !isImageMime) {
+    
+    // Validasi ekstensi file secara ketat (cegah bypass nama file seperti exploit.php)
+    if (!allowedExtensions.includes(fileExtension)) {
         alert('Format file tidak didukung. Harap pilih gambar dengan format JPG, JPEG, PNG, GIF, TIFF, atau HEIC.');
+        return;
+    }
+
+    // Validasi MIME type secara spesifik (cegah MIME type spoofing/content-type injection)
+    const allowedMimeTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'image/tiff',
+        'image/heic',
+        'image/heif'
+    ];
+    // Beberapa browser/OS mungkin mendeteksi file HEIC dengan tipe kosong, 
+    // jadi kita hanya memvalidasi tipe file jika tipe tersebut terdefinisi.
+    if (file.type && !allowedMimeTypes.includes(file.type.toLowerCase())) {
+        alert('Format file tidak valid (MIME type mismatch). Harap pilih gambar yang valid.');
         return;
     }
 
@@ -415,7 +432,7 @@ function displayResult(grade, bodyPart, age) {
         if (bodyPart === "tangan") {
             if (age === "anak") {
                 baseAdvice = `
-<strong>Meredakan nyeri dan mempercepat pemulihan kulit</strong><br><br>
+<strong>Rekomendasi Penanganan</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Dinginkan luka dengan air mengalir selama 20 menit.
@@ -432,6 +449,9 @@ function displayResult(grade, bodyPart, age) {
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Lakukan gerakan ringan jari dan pergelangan tangan jika tidak menimbulkan nyeri.
     </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Gunakan pereda nyeri (analgesik) yang disesuaikan dengan usia anak di bawah pengawasan orang tua.
+    </li>
 </ul>
 `;
             } else {
@@ -439,19 +459,22 @@ function displayResult(grade, bodyPart, age) {
 <strong>Rekomendasi Penanganan</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Lepaskan cincin, jam tangan, gelang, atau aksesori lainnya.
+        Dinginkan luka dengan air mengalir selama 20 menit.
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Kurangi penggunaan tangan dan hindari aktivitas berat.
+        Lepaskan cincin, jam tangan, gelang, atau aksesori lainnya.
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Tinggikan tangan untuk mengurangi pembengkakan.
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Oleskan aloe vera atau pelembap pada area luka.
+        Jaga kebersihan area luka dan gunakan kasa pelindung bila diperlukan.
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Dinginkan luka dengan air mengalir selama 20 menit.
+        Lakukan gerakan ringan jari dan pergelangan tangan jika tidak menimbulkan nyeri.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Gunakan pereda nyeri (analgesik) sesuai rekomendasi dosis standar.
     </li>
 </ul>
 <div style="margin-top: 1.5rem;">
@@ -472,7 +495,7 @@ function displayResult(grade, bodyPart, age) {
         } else if (bodyPart === "kaki") {
             if (age === "anak") {
                 baseAdvice = `
-<strong>Meredakan nyeri dan mempercepat pemulihan kulit</strong><br><br>
+<strong>Rekomendasi Penanganan</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Dinginkan luka dengan air mengalir selama 20 menit.
@@ -481,13 +504,16 @@ function displayResult(grade, bodyPart, age) {
         Lepaskan sepatu atau aksesori yang tidak menempel.
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Istirahatkan dan kurangi aktivitas pada kaki.
+        Kurangi aktivitas menahan beban (seperti berdiri atau berjalan).
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Tinggikan kaki bila bengkak.
     </li>
     <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Oleskan aloe vera atau pelembap.
+        Oleskan aloe vera atau pelembap untuk menjaga kelembapan kulit.
+    </li>
+    <li style="background: white; border-left: 3px solid #EAB308; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Gunakan pereda nyeri (analgesik) yang disesuaikan dengan usia anak di bawah pengawasan orang tua.
     </li>
 </ul>
 `;
@@ -542,7 +568,10 @@ function displayResult(grade, bodyPart, age) {
         Tinggikan tangan untuk mengurangi pembengkakan.
     </li>
     <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Lakukan gerakan ringan jari jika tidak menimbulkan nyeri.
+        Batasi aktivitas tangan hingga proses pemulihan berjalan.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Evaluasi medis direkomendasikan jika fungsi tangan terganggu/terpengaruh.
     </li>
 </ul>
 `;
@@ -599,6 +628,12 @@ function displayResult(grade, bodyPart, age) {
     <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Tinggikan kaki untuk mengurangi pembengkakan.
     </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Pantau tanda-tanda infeksi.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Pantau keterbatasan mobilitas anak secara lebih ketat.
+    </li>
 </ul>
 `;
             } else {
@@ -624,36 +659,41 @@ function displayResult(grade, bodyPart, age) {
     <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Tinggikan kaki untuk mengurangi pembengkakan.
     </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Pantau tanda-tanda infeksi.
+    </li>
+    <li style="background: white; border-left: 3px solid #F97316; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Lakukan pemantauan rutin dan pembatasan aktivitas.
+    </li>
 </ul>
 `;
             }
         }
-
     } else if (gradeLower.includes("3")) {
         // --- GRADE 3: FULL THICKNESS ---
         if (bodyPart === "tangan") {
             if (age === "anak") {
                 warningText = `<strong>WARNING!</strong> Pasien anak lebih rentan terhadap syok dan dehidrasi. <strong>Segera bawa ke rumah sakit untuk mendapatkan penanganan medis.</strong>`;
                 baseAdvice = `
-<strong>Rekomendasi Penanganan</strong><br><br>
+<strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Jauhkan anak dari sumber panas.
+        Hentikan paparan panas (atau jauhkan anak dari sumber panas).
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Lepaskan cincin, gelang, atau aksesori yang tidak menempel pada luka.
+        Lepaskan cincin, gelang, jam tangan, atau aksesori lainnya yang tidak menempel pada luka.
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Tutup luka dengan kasa steril atau kain bersih.
+        Tutup luka dengan kasa steril atau kain bersih secara longgar.
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Tinggikan tangan jika memungkinkan.
+        Tinggikan posisi tangan jika memungkinkan.
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Jaga tubuh anak tetap hangat.
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Melepaskan pakaian atau benda yang menempel pada luka.
+        Segera cari pertolongan medis.
     </li>
 </ul>
 <div style="margin-top: 1.5rem;">
@@ -663,7 +703,7 @@ function displayResult(grade, bodyPart, age) {
             <tr style="border-bottom: 1px solid #fee2e2;">
                 <td style="padding: 10px 14px; font-size: 0.85rem; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-circle-xmark" style="color: #ef4444; font-size: 1rem; flex-shrink: 0;"></i>
-                    <span>Mengoleskan pasta gigi, mentega, minyak, or bahan tradisional lainnya.</span>
+                    <span>Mengoleskan pasta gigi, mentega, minyak, atau bahan tradisional lainnya.</span>
                 </td>
             </tr>
             <tr>
@@ -682,7 +722,7 @@ function displayResult(grade, bodyPart, age) {
 <strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Jauhkan korban dari sumber panas atau penyebab luka bakar.
+        Hentikan paparan panas (atau jauhkan korban dari sumber panas).
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Lepaskan cincin, gelang, jam tangan, atau perhiasan yang tidak menempel pada luka.
@@ -691,7 +731,13 @@ function displayResult(grade, bodyPart, age) {
         Tutup luka dengan kasa steril atau kain bersih secara longgar.
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Tinggikan tangan jika memungkinkan untuk mengurangi pembengkakan.
+        Tinggikan posisi tangan jika memungkinkan untuk mengurangi pembengkakan.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Jaga tubuh tetap hangat.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Segera cari pertolongan medis.
     </li>
 </ul>
 `;
@@ -703,7 +749,7 @@ function displayResult(grade, bodyPart, age) {
 <strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Jauhkan korban dari sumber panas.
+        Hentikan paparan panas (atau jauhkan korban dari sumber panas).
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Lepaskan sepatu, kaus kaki, dan aksesori yang tidak menempel pada luka.
@@ -717,6 +763,9 @@ function displayResult(grade, bodyPart, age) {
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Jaga suhu tubuh agar tetap hangat.
     </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Segera cari penanganan rumah sakit.
+    </li>
 </ul>
 `;
             } else {
@@ -725,7 +774,7 @@ function displayResult(grade, bodyPart, age) {
 <strong>Pertolongan Pertama Sebelum ke Rumah Sakit</strong><br><br>
 <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
-        Jauhkan korban dari sumber panas.
+        Hentikan paparan panas (atau jauhkan korban dari sumber panas).
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Lepaskan sepatu, kaus kaki, dan aksesori yang tidak menempel pada luka.
@@ -738,6 +787,9 @@ function displayResult(grade, bodyPart, age) {
     </li>
     <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
         Jaga tubuh tetap hangat.
+    </li>
+    <li style="background: white; border-left: 3px solid #e63946; padding: 10px 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.85rem; color: #334155; line-height: 1.5;">
+        Segera cari penanganan rumah sakit.
     </li>
 </ul>
 `;
@@ -828,7 +880,3 @@ function findClinic() {
         }
     }
 }
-
-console.log("hai")
-
-print("waw")
