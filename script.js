@@ -795,3 +795,5 @@ function findClinic() {
 }
 
 console.log("hai")
+
+print("waw")
